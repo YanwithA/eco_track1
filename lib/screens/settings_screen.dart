@@ -124,15 +124,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: () {},
                   ),
                   const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(Icons.logout),
-                    title: const Text('Log Out'),
-                    textColor: Colors.red,
-                    iconColor: Colors.red,
-                    onTap: () {
-                      // Add logout logic
-                    },
-                  ),
                 ],
               ),
             ),
@@ -154,17 +145,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: () {},
                   ),
                   const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(Icons.star_outline),
-                    title: const Text('Rate the App'),
-                    onTap: () {},
-                  ),
-                  const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(Icons.share),
-                    title: const Text('Share App'),
-                    onTap: () {},
-                  ),
                 ],
               ),
             ),

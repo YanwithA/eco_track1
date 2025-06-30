@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:eco_track1/screens/scan_screen.dart'; // Make sure to import your ScanScreen
 
 class ImpactScreen extends StatelessWidget {
   const ImpactScreen({super.key});
@@ -9,12 +9,23 @@ class ImpactScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Impact'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate back to ScanScreen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ScanScreen()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Sustainability Score Card
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -31,30 +42,11 @@ class ImpactScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      height: 200,
-                      child: SfCircularChart(
-                        series: <CircularSeries<ChartData, String>>[
-                          DoughnutSeries<ChartData, String>(
-                            dataSource: [
-                              ChartData('Food', 35),
-                              ChartData('Personal Care', 25),
-                              ChartData('Household', 20),
-                              ChartData('Other', 20),
-                            ],
-                            xValueMapper: (ChartData data, _) => data.category,
-                            yValueMapper: (ChartData data, _) => data.value,
-                            dataLabelSettings: const DataLabelSettings(isVisible: true),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     const Text(
                       '75/100',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 36,
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
                       ),
@@ -67,11 +59,24 @@ class ImpactScreen extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    // Simple progress indicator
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: LinearProgressIndicator(
+                        value: 0.75,
+                        backgroundColor: Colors.grey[200],
+                        color: Colors.green,
+                        minHeight: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 24),
+
+            // Monthly Impact Section
             const Text(
               'Monthly Impact',
               style: TextStyle(
@@ -80,28 +85,29 @@ class ImpactScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            SizedBox(
-              height: 300,
-              child: SfCartesianChart(
-                primaryXAxis: CategoryAxis(),
-                series: <CartesianSeries<ChartData, String>>[
-                  ColumnSeries<ChartData, String>(
-                    dataSource: [
-                      ChartData('Jan', 12),
-                      ChartData('Feb', 15),
-                      ChartData('Mar', 18),
-                      ChartData('Apr', 22),
-                      ChartData('May', 25),
-                      ChartData('Jun', 28),
-                    ],
-                    xValueMapper: (ChartData data, _) => data.category,
-                    yValueMapper: (ChartData data, _) => data.value,
-                    color: Colors.green,
-                  ),
-                ],
+            // Monthly progress list
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _buildMonthProgress('January', 12),
+                    _buildMonthProgress('February', 15),
+                    _buildMonthProgress('March', 18),
+                    _buildMonthProgress('April', 22),
+                    _buildMonthProgress('May', 25),
+                    _buildMonthProgress('June', 28),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
+
+            // Impact Breakdown
             const Text(
               'Impact Breakdown',
               style: TextStyle(
@@ -136,6 +142,36 @@ class ImpactScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildMonthProgress(String month, int score) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            month,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: score / 30, // Scale to max 30 points
+              backgroundColor: Colors.grey[200],
+              color: Colors.green,
+              minHeight: 8,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '$score points',
+            style: const TextStyle(color: Colors.grey, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildImpactItem(String title, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -146,9 +182,7 @@ class ImpactScreen extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Text(
@@ -162,11 +196,4 @@ class ImpactScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class ChartData {
-  final String category;
-  final int value;
-
-  ChartData(this.category, this.value);
 }

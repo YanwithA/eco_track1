@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:eco_track1/screens/auth/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:eco_track1/service/database_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,6 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -31,17 +34,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        // Register user with Firebase Auth
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
+        final uid = userCredential.user!.uid;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+        // Save user profile info to Firebase Database
+        await saveUserInfo(
+          uid,
+          _emailController.text.trim(),
+          _nameController.text.trim(), // ✅ fixed: pass name
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration successful! Please login.')),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Registration failed')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -60,6 +86,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               Image.asset('assets/images/register.png', height: 180),
               const SizedBox(height: 30),
+
+              // Name
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -67,14 +95,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                value == null || value.isEmpty ? 'Please enter your name' : null,
               ),
               const SizedBox(height: 20),
+
+              // Email
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -94,6 +120,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 },
               ),
               const SizedBox(height: 20),
+
+              // Password
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(
@@ -123,6 +151,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 },
               ),
               const SizedBox(height: 20),
+
+              // Confirm Password
               TextFormField(
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
@@ -141,14 +171,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   border: const OutlineInputBorder(),
                 ),
                 obscureText: _obscureConfirmPassword,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                value == null || value.isEmpty ? 'Please confirm your password' : null,
               ),
               const SizedBox(height: 30),
+
+              // Register Button
               ElevatedButton(
                 onPressed: _isLoading ? null : _register,
                 child: _isLoading
@@ -156,6 +184,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     : const Text('Register'),
               ),
               const SizedBox(height: 20),
+
+              // Login redirect
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

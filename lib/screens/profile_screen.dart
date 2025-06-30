@@ -1,9 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:eco_track1/screens/auth/login_screen.dart';
 import 'package:eco_track1/screens/settings_screen.dart';
+import 'package:eco_track1/screens/about_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String userName = 'Loading...';
+  String userEmail = '';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userEmail = user.email ?? 'No email';
+      });
+
+      final userRef =
+      FirebaseDatabase.instance.ref('users/${user.uid}/profile');
+      final snapshot = await userRef.get();
+
+      if (snapshot.exists) {
+        final data = Map<String, dynamic>.from(snapshot.value as Map);
+        setState(() {
+          userName = data['name'] ?? 'No Name';
+        });
+      } else {
+        setState(() {
+          userName = 'No Name Found';
+        });
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +68,9 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -31,17 +79,17 @@ class ProfileScreen extends StatelessWidget {
               backgroundImage: AssetImage('assets/images/profile.png'),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Lee Yan',
-              style: TextStyle(
+            Text(
+              userName,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'lee.yan@example.com',
-              style: TextStyle(
+            Text(
+              userEmail,
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
               ),
@@ -63,14 +111,6 @@ class ProfileScreen extends StatelessWidget {
                     _buildProfileItem('Saved Brands', Icons.bookmark, () {
                       // Navigate to saved brands
                     }),
-                    const Divider(),
-                    _buildProfileItem('Achievements', Icons.emoji_events, () {
-                      // Navigate to achievements
-                    }),
-                    const Divider(),
-                    _buildProfileItem('Invite Friends', Icons.share, () {
-                      // Share app
-                    }),
                   ],
                 ),
               ),
@@ -85,12 +125,13 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    _buildProfileItem('Help & Support', Icons.help, () {
-                      // Navigate to help
-                    }),
                     const Divider(),
                     _buildProfileItem('About EcoTrack', Icons.info, () {
-                      // Navigate to about
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AboutScreen()),
+                      );
                     }),
                     const Divider(),
                     _buildProfileItem('Logout', Icons.logout, () {
@@ -111,9 +152,7 @@ class ProfileScreen extends StatelessWidget {
       leading: Icon(icon, color: Colors.green),
       title: Text(
         title,
-        style: const TextStyle(
-          fontSize: 16,
-        ),
+        style: const TextStyle(fontSize: 16),
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
@@ -133,6 +172,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
+              FirebaseAuth.instance.signOut(); // Sign out
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginScreen()),

@@ -3,6 +3,8 @@ import 'package:eco_track1/screens/scan_screen.dart';
 import 'package:eco_track1/screens/impact_screen.dart';
 import 'package:eco_track1/screens/discover_screen.dart';
 import 'package:eco_track1/screens/profile_screen.dart';
+import 'package:eco_track1/service/database_service.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

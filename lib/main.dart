@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:eco_track1/screens/splash_screen.dart';
 import 'package:eco_track1/theme/app_theme.dart';
 
-void main() {
-  runApp(const EcoTrackApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase first
+  runApp(const EcoTrackApp());    // Then run the app
 }
 
 class EcoTrackApp extends StatelessWidget {
