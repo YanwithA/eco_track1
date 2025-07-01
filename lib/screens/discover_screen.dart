@@ -26,7 +26,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       id: '1',
       name: 'Patagonia',
       sustainabilityScore: 9.5,
-      imageUrl: 'assets/images/patagonia.png',
+      imageUrl: 'assets/images/patagonia.jpg',
       category: 'Fashion',
       description: 'Outdoor clothing company committed to environmental and social responsibility',
     ),
@@ -34,7 +34,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       id: '2',
       name: 'Seventh Generation',
       sustainabilityScore: 9.2,
-      imageUrl: 'assets/images/seventh_gen.png',
+      imageUrl: 'assets/images/seventh_gen.jpg',
       category: 'Household',
       description: 'Eco-friendly cleaning and personal care products',
     ),
@@ -42,7 +42,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       id: '3',
       name: 'Beyond Meat',
       sustainabilityScore: 8.8,
-      imageUrl: 'assets/images/beyond_meat.png',
+      imageUrl: 'assets/images/beyond_meat.jpg',
       category: 'Food',
       description: 'Plant-based meat alternatives with lower environmental impact',
     ),
@@ -129,7 +129,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.asset(
-                        'assets/images/sustainability_news.png',
+                        'assets/images/sustainability_news.jpg',
                         height: 150,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -149,16 +149,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          // Navigate to article
-                        },
-                        child: const Text('Read More'),
                       ),
                     ),
                   ],

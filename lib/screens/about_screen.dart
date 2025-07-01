@@ -21,7 +21,7 @@ class AboutScreen extends StatelessWidget {
             // App Logo/Header
             Center(
               child: Image.asset(
-                'assets/images/logo.png', // Replace with your logo
+                'assets/images/login.png',
                 height: 100,
                 width: 100,
               ),

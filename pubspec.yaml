@@ -12,8 +12,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
 
-
-  # NEW DEPENDENCIES ADDED BELOW (all existing content preserved exactly)
+  image_picker: ^0.8.7
   #syncfusion_flutter_charts: ^24.1.47
   smooth_page_indicator: ^1.1.0
   provider: ^6.1.1
@@ -34,7 +33,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Added assets section (keeping all your existing comments)
+
   assets:
     - assets/images/
     - assets/images/onboarding/

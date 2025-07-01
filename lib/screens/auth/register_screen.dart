@@ -48,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await saveUserInfo(
           uid,
           _emailController.text.trim(),
-          _nameController.text.trim(), // ✅ fixed: pass name
+          _nameController.text.trim(),
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +84,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset('assets/images/register.png', height: 180),
+              Image.asset('assets/images/login.jpg', height: 180),
               const SizedBox(height: 30),
 
               // Name

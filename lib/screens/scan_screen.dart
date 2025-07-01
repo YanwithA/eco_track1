@@ -97,7 +97,7 @@ class _ScanScreenState extends State<ScanScreen> {
           name: scannedProduct['name']!,
           brand: scannedProduct['brand']!,
           sustainabilityScore: scannedProduct['sustainabilityScore']!,
-          imageUrl: 'assets/images/placeholder.png', // You can update this
+          imageUrl: 'assets/images/placeholder.png',
           categories: ['Scanned'],
         ));
       });
@@ -190,8 +190,6 @@ class _ScanScreenState extends State<ScanScreen> {
                     .toList(),
               ),
           ],
-
-
         ),
       ),
     );

@@ -17,17 +17,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {
       'title': 'Scan Products',
       'description': 'Scan barcodes to instantly get sustainability ratings for products',
-      'image': 'assets/images/onboarding1.png',
+      'image': 'assets/images/onboarding/onboarding1.jpg',
     },
     {
       'title': 'Track Your Impact',
       'description': 'Monitor your carbon footprint and see how your choices make a difference',
-      'image': 'assets/images/onboarding2.png',
+      'image': 'assets/images/onboarding/onboarding2.jpg',
     },
     {
       'title': 'Discover Ethical Brands',
       'description': 'Find and support brands that align with your values',
-      'image': 'assets/images/onboarding3.png',
+      'image': 'assets/images/onboarding/onboarding3.jpg',
     },
   ];
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:eco_track1/provider/theme_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,12 +11,14 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
-  bool _darkModeEnabled = false;
   bool _ecoFriendlyMode = true;
   String _selectedLanguage = 'English';
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    bool _darkModeEnabled = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -48,9 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: const Text('Dark Mode'),
                     value: _darkModeEnabled,
                     onChanged: (value) {
-                      setState(() {
-                        _darkModeEnabled = value;
-                      });
+                      themeProvider.toggleTheme(value);
                     },
                   ),
                   const Divider(height: 1),
@@ -67,7 +69,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
-
             const SizedBox(height: 24),
 
             // Language Selection
@@ -100,7 +101,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 24),
 
             // Account Section
@@ -112,36 +112,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               child: Column(
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.person_outline),
-                    title: const Text('Edit Profile'),
-                    onTap: () {},
-                  ),
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.privacy_tip_outlined),
                     title: const Text('Privacy Settings'),
-                    onTap: () {},
-                  ),
-                  const Divider(height: 1),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // App Info Section
-            _buildSectionHeader('About'),
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text('About EcoTrack'),
                     onTap: () {},
                   ),
                   const Divider(height: 1),
