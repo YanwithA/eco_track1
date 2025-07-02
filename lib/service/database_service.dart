@@ -3,7 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 final db = FirebaseDatabase.instance.ref();
 
 // Save user profile info
-Future<void> saveUserInfo(String uid, String email,String name) async {
+Future<void> saveUserInfo(String uid, String email,String name,) async {
   try {
     print("🟢 Saving user info for $uid");
     await db.child('users/$uid/profile').set({
@@ -32,3 +32,18 @@ Future<void> saveToFavorites(String uid, Map<String, dynamic> item) async {
   final savedItem = db.child('users/$uid/saved').push();
   await savedItem.set(item);
 }
+
+// Save profile image
+Future<void> updateProfileImage(String uid, String imageBase64) async {
+  try {
+    await db.child('users/$uid/profile/imageBase64').set(imageBase64);
+    print("✅ Profile image updated");
+  } catch (e) {
+    print("❌ Failed to update profile image: $e");
+    rethrow;
+  }
+}
+
+
+
+

@@ -12,6 +12,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
 
+  image: ^4.1.3
+  path_provider: ^2.1.1
+  #firebase_storage: ^11.2.0
   image_picker: ^0.8.7
   #syncfusion_flutter_charts: ^24.1.47
   smooth_page_indicator: ^1.1.0
@@ -39,6 +42,4 @@ flutter:
     - assets/images/onboarding/
     - assets/images/auth/
     - assets/images/products/
-    - assets/images/brands/
-    - assets/images/icons/
-    - assets/images/misc/
+

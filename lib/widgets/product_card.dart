@@ -4,11 +4,19 @@ import 'package:eco_track1/models/product.dart';
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
+  final VoidCallback? onSave;
+  final Widget? trailing;
+  final double maxImageSize;
+  final bool isSaved;
 
   const ProductCard({
     super.key,
     required this.product,
     this.onTap,
+    this.onSave,
+    this.trailing,
+    this.maxImageSize = 64, // Avoid pixel overflow
+    this.isSaved = false,
   });
 
   @override
@@ -27,10 +35,19 @@ class ProductCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
+                child: product.imageUrl.startsWith('http')
+                    ? Image.network(
                   product.imageUrl,
-                  width: 80,
-                  height: 80,
+                  width: maxImageSize,
+                  height: maxImageSize,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) =>
+                  const Icon(Icons.broken_image, size: 40),
+                )
+                    : Image.asset(
+                  product.imageUrl,
+                  width: maxImageSize,
+                  height: maxImageSize,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -86,16 +103,42 @@ class ProductCard extends StatelessWidget {
                     Wrap(
                       spacing: 4,
                       children: product.categories
-                          .map((category) => Chip(
-                        label: Text(category),
-                        visualDensity: VisualDensity.compact,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ))
+                          .map(
+                            (category) => Chip(
+                          label: Text(category),
+                          visualDensity: VisualDensity.compact,
+                          materialTapTargetSize:
+                          MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      )
                           .toList(),
                     ),
+                    if (onSave != null) ...[
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: ElevatedButton.icon(
+                          onPressed: isSaved ? null : onSave,
+                          icon: Icon(isSaved ? Icons.bookmark_added : Icons.bookmark_add),
+                          label: Text(isSaved ? "Saved" : "Save"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isSaved ? Colors.grey : Colors.green,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
+          if (trailing != null) ...[
+            const SizedBox(width: 8),
+            trailing!,
+              ]
             ],
           ),
         ),

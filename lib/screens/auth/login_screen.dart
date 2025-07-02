@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:eco_track1/screens/auth/register_screen.dart';
 import 'package:eco_track1/screens/home_screen.dart';
+import 'package:eco_track1/screens/auth/forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,17 +25,54 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        // Step 1: Authenticate with Firebase
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
+        User? user = userCredential.user;
+        if (user == null) {
+          throw Exception('Authentication failed');
+        }
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+        // Step 2: Fetch user data from Realtime Database
+        final ref = FirebaseDatabase.instance.ref('users/${user.uid}');
+        final snapshot = await ref.get();
+
+        if (!snapshot.exists) {
+          // Optional: create default profile if not found
+          await ref.set({
+            'email': user.email,
+            'name': 'Anonymous',
+            'createdAt': DateTime.now().toIso8601String(),
+          });
+        }
+
+        // Step 3: Navigate to Home screen
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const HomeScreen()),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        String message = 'Login failed';
+        if (e.code == 'user-not-found') {
+          message = 'No user found with this email.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Incorrect password.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -102,17 +142,20 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {
-                    // Navigate to forgot password screen
-                  },
-                  child: const Text('Forgot Password?'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+                      );
+                    },
+                    child: const Text('Forgot Password?'),
                 ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 child: _isLoading
-                    ? const CircularProgressIndicator()
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : const Text('Login'),
               ),
               const SizedBox(height: 20),
@@ -124,7 +167,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const RegisterScreen()),
                       );
                     },
                     child: const Text('Sign Up'),
