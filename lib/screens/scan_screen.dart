@@ -86,7 +86,6 @@ class _ScanScreenState extends State<ScanScreen> {
       if (jsonData['status'] == 1) {
         final product = jsonData['product'];
 
-        // Generate random score between 1-10 (same as DiscoverScreen)
         final score = (_random.nextInt(10) + 1).toDouble();
 
         return {
