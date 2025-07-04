@@ -7,6 +7,7 @@ class Product {
   final double sustainabilityScore;
   final String imageUrl;
   final List<String> categories;
+  final String description;
 
   Product({
     required this.id,
@@ -15,6 +16,7 @@ class Product {
     required this.sustainabilityScore,
     required this.imageUrl,
     required this.categories,
+    this.description = '',
   });
 
   String get ratingText {
@@ -30,4 +32,6 @@ class Product {
     if (sustainabilityScore >= 5) return Colors.orange;
     return Colors.red;
   }
+
+  String get primaryCategory => categories.isNotEmpty ? categories.first : 'Uncategorized';
 }

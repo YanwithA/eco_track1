@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart'; // Add this import at the top
+import 'package:flutter/material.dart';
 
 class Brand {
   final String id;
@@ -8,7 +8,9 @@ class Brand {
   final String category;
   final String description;
   final int? productCount;
-  final List<String>? certifications;
+  final List<String> certifications;
+  final bool isFromApi;
+  final DateTime? scannedAt;
 
   Brand({
     required this.id,
@@ -18,18 +20,20 @@ class Brand {
     required this.category,
     required this.description,
     this.productCount,
-    this.certifications,
-  });
+    List<String>? certifications,
+    this.isFromApi = false,
+    this.scannedAt,
+  }) : certifications = certifications ?? [];
 
-  // Helper method to get sustainability rating text
+  /// Derived label from score
   String get ratingText {
     if (sustainabilityScore >= 9) return 'Excellent';
     if (sustainabilityScore >= 7) return 'Very Good';
     if (sustainabilityScore >= 5) return 'Good';
-    return 'Needs Improvement';
+    return 'Poor';
   }
 
-  // Helper method to get rating color
+  /// Derived color from score
   Color get ratingColor {
     if (sustainabilityScore >= 9) return Colors.green;
     if (sustainabilityScore >= 7) return Colors.lightGreen;

@@ -44,6 +44,12 @@ Future<void> updateProfileImage(String uid, String imageBase64) async {
   }
 }
 
+Future<bool> isAlreadySaved(String uid, String productId) async {
+  final snap = await FirebaseDatabase.instance.ref('users/$uid/saved').orderByChild('id').equalTo(productId).get();
+  return snap.exists;
+}
+
+
 
 
 
