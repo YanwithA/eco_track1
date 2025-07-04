@@ -35,7 +35,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       await Future.delayed(const Duration(milliseconds: 300));
       Navigator.pop(context, {
         'barcode': barcodeValue,
-        'imageUrl': null, // You can update this if adding image snapshot later
+        'imageUrl': null,
       });
     }
   }
