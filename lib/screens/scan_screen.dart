@@ -8,12 +8,25 @@ import 'package:eco_track1/screens/scan_history_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:eco_track1/service/database_service.dart';
+import 'dart:math';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
   @override
   _ScanScreenState createState() => _ScanScreenState();
 }
+
+final _random = Random();
+final _shortDescriptions = [
+  'Eco-friendly packaging',
+  'Sustainably sourced ingredients',
+  'Cruelty-free and vegan',
+  'Made with natural materials',
+  'Low carbon footprint production',
+  'Recyclable container',
+  'Minimal water usage in production',
+  'Ethically manufactured',
+];
 
 class _ScanScreenState extends State<ScanScreen> {
   List<Map<String, dynamic>> recentScans = [];
@@ -67,21 +80,26 @@ class _ScanScreenState extends State<ScanScreen> {
   Future<Map<String, dynamic>> lookupProductByBarcode(String barcode) async {
     final url = Uri.parse('https://world.openfoodfacts.org/api/v0/product/$barcode.json');
     final resp = await http.get(url);
+
     if (resp.statusCode == 200) {
       final jsonData = json.decode(resp.body);
       if (jsonData['status'] == 1) {
         final product = jsonData['product'];
+
+        // Generate random score between 1-10 (same as DiscoverScreen)
+        final score = (_random.nextInt(10) + 1).toDouble();
+
         return {
           'name': product['product_name'] ?? 'Unknown Product',
           'brand': (product['brands'] as String? ?? 'Unknown').split(',').first,
-          'sustainabilityScore': 5.0, // placeholder static score
+          'sustainabilityScore': score,
           'imageUrl': product['image_front_url'] ?? product['image_url'] ?? '',
+          'description': _shortDescriptions[_random.nextInt(_shortDescriptions.length)],
         };
       }
     }
     throw Exception('Product not found');
   }
-
   Future<void> _loadRecentScans() async {
     final u = FirebaseAuth.instance.currentUser;
     if (u == null) {
